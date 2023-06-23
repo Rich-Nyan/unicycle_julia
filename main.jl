@@ -28,7 +28,7 @@ println(@sprintf("Initial: X = %.2f, Y = % .2f, Heading = %.2f", prevx, prevy, (
 for i in 1:length(vectorlist)
     for j in 1:deltat
         global curheading += vectorlist[i]
-        global prevx += velocity * cos((curheading) * (pi / 180))
+        global prevx += velocity * cos((curheading) * (pi / 180)) # Euler's Method
         global prevy += velocity * sin((curheading) * (pi / 180))
         currentx[index] = prevx
         currenty[index] = prevy
