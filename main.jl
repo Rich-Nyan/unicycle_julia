@@ -22,6 +22,8 @@ currenty[1] = initialpose[2]
 currentheading[1] = initialpose[3]
 curheading = currentheading[1]
 index = 2
+mini = min(currentx[1],currenty[1])
+maxi = max(currentx[1],currenty[1])
 prevx = initialpose[1]
 prevy = initialpose[2]
 println(@sprintf("Initial: X = %.2f, Y = % .2f, Heading = %.2f", prevx, prevy, (curheading % 360)))
@@ -32,6 +34,8 @@ for i in 1:length(vectorlist)
         global prevy += velocity * sin((curheading) * (pi / 180))
         currentx[index] = prevx
         currenty[index] = prevy
+        global mini = min(mini, min(currentx[index], currenty[index]))
+        global maxi = max(maxi, max(currentx[index], currenty[index]))
         currentheading[index] = curheading
         global index += 1
     end
@@ -55,13 +59,21 @@ y1 = currenty[k]
 end
 
 # Gif Option 1
-gify = @animate for i ∈ 1:length(currentx)-1
-    trajectory(x1,y1, i)
-end when i < length(currentx)
+# gify = @animate for i ∈ 1:length(currentx)-1
+#     trajectory(x1,y1, i)
+# end when i < length(currentx)
 
 # Gif Option 2
-# p = plot(1)
-# gify = @animate for i=1:1:length(currentx)
-#   push!(p, 1, (currentx[i],currenty[i]))
-# end
+p = plot(
+    1,
+    linewidth = 4,
+    label = false,
+    aspectratio = 1,
+    ylimits = (mini,maxi),
+    xlimits = (mini,maxi)
+)
+
+gify = @animate for i=1:1:length(currentx)
+  push!(p, 1, (currentx[i],currenty[i]))
+end
 gif(gify, "unicycle.gif", fps = 50)
